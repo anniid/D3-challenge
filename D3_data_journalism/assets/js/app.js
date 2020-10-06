@@ -21,7 +21,7 @@ var svg = d3
     .append('svg') //adding an svg element in the html where there is a div scatter tag
     .attr('width', width)
     .attr('height', height)
-    .attr('class', 'chart');
+    .attr('class', 'chart')
 
 
 //Set the radius for the dots on the graph as a function
@@ -98,7 +98,7 @@ yLabelResp();
 //poverty
 yLabel
     .append('text')
-    .attr('x',-25)
+    .attr('y',-40)
     .attr('data-name','poverty')
     .attr('data-axis','y')
     .attr('class','aText active y')
@@ -106,7 +106,7 @@ yLabel
 //avg income
 yLabel
     .append('text')
-    .attr('x',0)
+    .attr('y',-20)
     .attr('data-name','income')
     .attr('data-axis','y')
     .attr('class','aText inactive y')
@@ -114,7 +114,7 @@ yLabel
 //age
 yLabel
     .append('text')
-    .attr('x',25)
+    .attr('y',0)
     .attr('data-name','age')
     .attr('data-axis','y')
     .attr('class','aText inactive y')
@@ -134,23 +134,7 @@ function visualize(data1) {
     var MinY;
     var MaxY;
 
-    //tooltip setup
-    var toolTip = d3.tip()
-        .attr("class", "d3-tip")
-        .html(function(d){
-            var xSpot;
-            var StateAbbr = `<div> ${d.state}</div>`;
-            var ySpot =`<div> ${yData}: ${d[yData]}</div>`;
-            if (xData === 'smokes'){
-                xSpot = `<div>${xData}: ${d[xData]}%</div>`;
-            }
-            else {
-                xSpot = '<div>'+xData+': '+
-                parseFloat(d[xData]).toLocaleString('en')+'</div>';
-            }
-            return StateAbbr + xSpot + ySpot;
-        });
-    svg.call(toolTip);
+    
     //change the min and max for x (smalled for min, largest for max)
     function minMaxX() {
         MinX = d3.min(data1, function(d){
@@ -196,7 +180,7 @@ function visualize(data1) {
 
     //pass scales in axis methods to create the axes
     var xAxis = d3.axisBottom(scaleX);
-    var yAxis = d3.axisLect(scaleY);
+    var yAxis = d3.axisLeft(scaleY);
 
     //tick marks for x and y (to be responsive)
     function tickResp(){
@@ -232,15 +216,13 @@ function visualize(data1) {
         .attr("class",function(d){
             return 'stateCircle' +d.abbr;
         })
-        //mouseover rules: tooltip, color change
+        //mouseover rules:  color change
         .on('mouseover', function(d){
-            toolTip.show(d, this);
             d3.select(this).style('fill', '#FD8435');
         })
-        //mouseout rules: tooltip, color change
+        //mouseout rules: color change
         .on('mouseout', function(d){
-            toolTip.hide(d);
-            d3.select(this).style('fill', '#FD8435');
+            d3.select(this).style('fill', '#000000');
         });
 
 
