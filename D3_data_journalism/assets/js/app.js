@@ -1,6 +1,6 @@
 // @TODO: YOUR CODE HERE!
 //Grab width of #scatter
-var width = parseInt(d3.select('#scatter').stle('width'));
+var width = parseInt(d3.select('#scatter').style('width'));
 
 //calculate needed height of graph
 var height = width - (width/4);
@@ -124,7 +124,7 @@ yLabel
 d3.csv("assets/data/data.csv").then(function(data){
     visualize(data);
 });
-function visualize(data) {
+function visualize(data1) {
     //create default data values for x and y (the ones set as active above)
     var xData = "smokes";
     var yData = "poverty";
@@ -135,8 +135,7 @@ function visualize(data) {
     var MaxY;
 
     //tooltip setup
-    var toolTip = d3
-        .tip()
+    var toolTip = d3.tip()
         .attr("class", "d3-tip")
         .html(function(d){
             var xSpot;
@@ -154,10 +153,10 @@ function visualize(data) {
     svg.call(toolTip);
     //change the min and max for x (smalled for min, largest for max)
     function minMaxX() {
-        MinX = d3.min(data, function(d){
+        MinX = d3.min(data1, function(d){
             return parseFloat(d[xData]);
         });
-        MaxX = d3.max(data, function(d){
+        MaxX = d3.max(data1, function(d){
             return parseFloat(d[xData]);
         });
     }
@@ -165,10 +164,10 @@ function visualize(data) {
     //change the min and max for y
     function minMaxY()
     {
-        MinY = d3.min(data, function(d){
+        MinY = d3.min(data1, function(d){
             return parseFloat(d[yData]);
         });
-        MaxY = d3.max(data, function(d){
+        MaxY = d3.max(data1, function(d){
             return parseFloat(d[yData]);
         });
     }
@@ -186,8 +185,8 @@ function visualize(data) {
     }
 
     //grab min and max values for both x and y
-    xMinMax();
-    yMinMax();
+    minMaxX();
+    minMaxY();
     //set scale using d3 for both x (bottom) and y (left)
     //& reverse the y axis
     var scaleX = d3
@@ -221,7 +220,7 @@ function visualize(data) {
 
 
     //make a group for the dots on the graph with their labels (state abbrv)
-    var dots = svg.selectAll('g dots').data(data).enter();
+    var dots = svg.selectAll('g dots').data(data1).enter();
     //append the circles for each state
     dots.append('circle').attr('cx', function(d){
             return scaleX(d[xData]);
@@ -256,7 +255,7 @@ function visualize(data) {
 
             if (axis === 'x') {
                 xData = name;
-                xMinMax();
+                minMaxX();
                 scaleX.domain([MinX,MaxX]);
                 //transition
                 svg.select('.xAxis').transition().duration(180).call(xAxis);
@@ -284,7 +283,7 @@ function visualize(data) {
             }
             else {
                 yData = name;
-                yMinMax();
+                minMaxY();
                 scaleY.domain([MinY,MaxY]);
                 svg.select('.yAxis')
                     .transition()
