@@ -45,13 +45,13 @@ circleSizeRetrieve();
 svg.append('g').attr('class','xLabel');
 var xLabel = d3.select('.xLabel');
 
-function xLabelRefresh(){
+function xLabelResp(){
 xLabel.attr(
     'transform',
     'translate('+ ((width-labelSpace)/2+labelSpace)+", "+
     (height-margin-textPadx)+')'
 );}
-xLabelRefresh();
+xLabelResp();
 //put in values for possible X labels at specific y coordinates
 //smoking
 xLabel
@@ -82,17 +82,18 @@ xLabel
 
 
 //left axis (y) same as x
+
 svg.append('g').attr('class','yLabel');
 var yLabel = d3.select('.yLabel');
 
-function yLabelRefresh(){
+function yLabelResp(){
     yLabel.attr(
         'transform',
         'translate('+ ((height+labelSpace)/2-labelSpace)+", "+
         (margin+textPady)+')rotate(-90)'
     );
 }
-yLabelRefresh();
+yLabelResp();
 //add values for possible y labels
 //poverty
 yLabel
@@ -212,14 +213,82 @@ function visualize(data) {
     tickResp();
     //append the axes using svg in group (g) elements, use transform to tell it where they should go
     svg
-        .append('g')
+        .append('g').call(xAxis).attr('class','xAxis')
+        .attr('transform','translate(0,'+(height-margin-labelSpace)+')');
+    svg
+        .append('g').call(yAxis).attr('class','yAxis')
+        .attr('transform','translate('+(margin+labelSpace)+',0)');
 
 
     //make a group for the dots on the graph with their labels (state abbrv)
-
+    var dots = svg.selectAll('g dots').data(data).enter();
     //append the circles for each state
+    dots.append('circle').attr('cx', function(d){
+            return scaleX(d[xData]);
+        })
+        .attr('cy', function(d){
+            return scaleY(d[yData]);
+        })
+        .attr('r', circleRad)
+        .attr("class",function(d){
+            return 'stateCircle' +d.abbr;
+        })
+        //mouseover rules: tooltip, color change
+        .on('mouseover', function(d){
+            toolTip.show(d, this);
+            d3.select(this).style('fill', '#FD8435');
+        })
+        //mouseout rules: tooltip, color change
+        .on('mouseout', function(d){
+            toolTip.hide(d);
+            d3.select(this).style('fill', '#FD8435');
+        });
+    //click on labels to display different data
+        //"click" on the text
 
-        //attrib of location, size, and class
+        //if inactive, update attr, domain, axis, dots, abbreviations, labels, add transitions
 
+        //run the code
+    //make the page completely responsive
+        d3.select(window).on('resize', resize);
+        //d3 to resize window: width, height
+        function resize() {
+            width = parseFloat(d3.select("#scatter").style('width'));
+            height = width - width/4;
+            //new width and height to svg canvas for plot
+            svg.attr('width', width).attr('height', height);
+            //change scale ranges
+            scaleX.range([margin + labelSpace, width - margin]);
+            scaleY.range([height-labelSpace-margin, margin]);
 
+            //update scales, axes, ticks, labels
+            svg.select('xAxis').call(xAxis).attr('transform','translate(0,'+(height-margin-labelSpace)+")");
+            svg.select('yaxis').call(yAxis);
+            
+            xLabelResp();
+            yLabelResp();
+            tickResp();
+
+            //update size of dots
+            circleSizeRetrieve();
+            //update location and rad using d3
+            d3.selectAll('circle')
+                .attr('cy',function(d){
+                    return scaleY(d[yData]);
+                })
+                .attr('cx',function(d){
+                    return scaleX(d[xData]);
+                })
+                .attr('r', function(){ return circleRad;
+                });
+            //match the location and size of state abbreviations to dots
+            d3.selectAll('.stateText')
+                .attr('dy',function(d){
+                    return scaleY(d[yData]) + circleRad/3;
+                })
+                .attr('dx', function(d){
+                    return scaleY(d[yData]);
+                })
+                .attr('r', circleRad/3);
+        }
 }
