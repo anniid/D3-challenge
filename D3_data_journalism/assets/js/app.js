@@ -31,7 +31,7 @@ function circleSizeRetrieve() {
         circleRad =5;
     }
     else {
-        circleRad=10;
+        circleRad=8;
     }
 }
 circleSizeRetrieve();
@@ -46,7 +46,7 @@ var xLabel = d3.select('.xLabel');
 function xLabelResp(){
 xLabel.attr(
     'transform',
-    'translate('+ ((width-labelSpace)/2+labelSpace)+", "+
+    'translate('+ ((width-labelSpace)/ 2 + labelSpace)+", "+
     (height-margin-textPadx)+')'
 );}
 xLabelResp();
@@ -54,7 +54,7 @@ xLabelResp();
 //smoking
 xLabel
     .append('text')
-    .attr('y',-25)
+    .attr('y',-15)
     .attr('data-name','smokes')
     .attr('data-axis','x')
     .attr('class','aText active x')
@@ -63,7 +63,7 @@ xLabel
 //obesity
 xLabel
     .append('text')
-    .attr('y',0)
+    .attr('y',5)
     .attr('data-name','obesity')
     .attr('data-axis','x')
     .attr('class','aText inactive x')
@@ -298,7 +298,7 @@ function visualize(data1) {
         d3.select(window).on('resize', resize);
         //d3 to resize window: width, height
         function resize() {
-            width = parseFloat(d3.select("#scatter").style('width'));
+            width = parseInt(d3.select("#scatter").style('width'));
             height = width - width/4;
             leftTextY = (height + labelSpace) / 2 - labelSpace;
             //new width and height to svg canvas for plot
@@ -308,7 +308,7 @@ function visualize(data1) {
             scaleY.range([height-labelSpace-margin, margin]);
 
             //update scales, axes, ticks, labels
-            svg.select('xAxis').call(xAxis).attr('transform','translate(0,'+(height-margin-labelSpace)+")");
+            svg.select('xAxis').call(xAxis).attr('transform','translate(0,'+(height-labelSpace-margin)+")");
             svg.select('yaxis').call(yAxis);
             
             xLabelResp();
