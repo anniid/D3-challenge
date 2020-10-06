@@ -244,15 +244,75 @@ function visualize(data) {
             d3.select(this).style('fill', '#FD8435');
         });
 
-        
+
     //click on labels to display different data
         //"click" on the text
-
+    d3.selectAll('.aText').on('click', function(){
+        var clickedObj = d3.select(this);
         //if inactive, update attr, domain, axis, dots, abbreviations, labels, add transitions
+        if (clickedObj.classed('inactive')){
+            var axis = clickedObj.attr('data-axis');
+            var name = clickedObj.attr('data-name');
 
-        //run the code
-
-
+            if (axis === 'x') {
+                xData = name;
+                xMinMax();
+                scaleX.domain([MinX,MaxX]);
+                //transition
+                svg.select('.xAxis').transition().duration(180).call(xAxis);
+                //dots move
+                d3.selectAll('circle').each(function(){
+                    d3.select(this)
+                        .transition()
+                        .attr('cx', function(d){
+                            return scaleX(d[xData]);
+                        })
+                        .duration(180);
+                    });
+                //state abbreviations move
+                d3.selectAll('.stateText').each(function(){
+                    d3.select(this)
+                        .transition()
+                        .attr('dx', function(d){
+                            return scaleX(d[xData]);
+                        })
+                        .duration(180);
+                });
+                
+            //run the code
+            labelClick(axis,clickedObj);
+            }
+            else {
+                yData = name;
+                yMinMax();
+                scaleY.domain([MinY,MaxY]);
+                svg.select('.yAxis')
+                    .transition()
+                    .duration(180)
+                    .call(yAxis);
+                //dot update for y
+                d3.selectAll('circle').each(function(){
+                    d3.select(this)
+                        .transition()
+                        .attr('cy',function(d){
+                            return scaleY(d[yData]);
+                        })
+                        .duration(180);
+                });
+                //state abbreviations for y
+                d3.selectAll('.stateText').each(function(){
+                    d3.select(this)
+                        .transition()
+                        .attr('dy', function(d){
+                            return scaleY(d[yData]) + circleRad/3;
+                        })
+                        .duration(180);
+                });
+            //run it
+            labelClick(axis, clickedObj);
+            }
+        }
+    });
     //make the page completely responsive
         d3.select(window).on('resize', resize);
         //d3 to resize window: width, height
