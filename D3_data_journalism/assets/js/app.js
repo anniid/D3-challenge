@@ -243,12 +243,16 @@ function visualize(data) {
             toolTip.hide(d);
             d3.select(this).style('fill', '#FD8435');
         });
+
+        
     //click on labels to display different data
         //"click" on the text
 
         //if inactive, update attr, domain, axis, dots, abbreviations, labels, add transitions
 
         //run the code
+
+
     //make the page completely responsive
         d3.select(window).on('resize', resize);
         //d3 to resize window: width, height
