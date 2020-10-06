@@ -36,8 +36,6 @@ function circleSizeRetrieve() {
 }
 circleSizeRetrieve();
 
-//labels for axes
-
 //X axis (bottom)
 //append a g element so that they have somewhere to sit in the html
 //create x axis vairable and give it a transform property to make the page responsive to window size
@@ -82,6 +80,8 @@ xLabel
 
 
 //left axis (y) same as x
+var leftTextX = margin + textPadx;
+var leftTextY = (height + labelSpace) / 2 - labelSpace;
 
 svg.append('g').attr('class','yLabel');
 var yLabel = d3.select('.yLabel');
@@ -89,11 +89,11 @@ var yLabel = d3.select('.yLabel');
 function yLabelResp(){
     yLabel.attr(
         'transform',
-        'translate('+ ((height+labelSpace)/2-labelSpace)+", "+
-        (margin+textPady)+')rotate(-90)'
+        'translate('+ leftTextX+", " +leftTextY+ ')rotate(-90)'
     );
 }
 yLabelResp();
+
 //add values for possible y labels
 //poverty
 yLabel
@@ -318,6 +318,7 @@ function visualize(data1) {
         function resize() {
             width = parseFloat(d3.select("#scatter").style('width'));
             height = width - width/4;
+            leftTextY = (height + labelSpace) / 2 - labelSpace;
             //new width and height to svg canvas for plot
             svg.attr('width', width).attr('height', height);
             //change scale ranges
